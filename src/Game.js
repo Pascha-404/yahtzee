@@ -29,10 +29,12 @@ class Game extends Component {
 				yahtzee: undefined,
 				chance: undefined,
 			},
+			gameOver: false,
 		};
 		this.roll = this.roll.bind(this);
 		this.doScore = this.doScore.bind(this);
 		this.toggleLocked = this.toggleLocked.bind(this);
+		this.restartGame = this.restartGame.bind(this);
 	}
 
 	roll(evt) {
@@ -46,6 +48,7 @@ class Game extends Component {
 				isRolling: false,
 			}));
 		}, 1000);
+		
 	}
 
 	toggleLocked(idx) {
@@ -67,17 +70,56 @@ class Game extends Component {
 
 	totalScore(evt) {
 		let total = 0;
-		console.log(Object.values(this.state.scores).forEach(element => {
+		let rulesLeft = 13;
+		Object.values(this.state.scores).forEach(element => {
 			if (element !== undefined) {
-				total = total + element
-			} 
-		}))
+				total = total + element;
+				rulesLeft = rulesLeft - 1;
+			}
+		});
+		
 		return <h2>Total Score: {total}</h2>;
 	}
 
 	startGame(evt) {
 		if (this.state.rollsLeft === 3 && this.state.dice[0] === undefined) {
 			this.roll();
+		}
+	}
+
+	restartGame(evt) {
+		this.setState(st => ({
+			dice: Array.from({ length: NUM_DICE }),
+			locked: Array(NUM_DICE).fill(false),
+			rollsLeft: NUM_ROLLS,
+			isRolling: false,
+			scores: {
+				ones: undefined,
+				twos: undefined,
+				threes: undefined,
+				fours: undefined,
+				fives: undefined,
+				sixes: undefined,
+				threeOfKind: undefined,
+				fourOfKind: undefined,
+				fullHouse: undefined,
+				smallStraight: undefined,
+				largeStraight: undefined,
+				yahtzee: undefined,
+				chance: undefined,
+			},
+			gameOver: false,
+		}));
+	}
+
+	btnText(evt) {
+		if (this.state.gameOver === true) {
+			return 'Restart Game';
+		}
+		if (this.state.rollsLeft >= 3) {
+			return 'Starting Round';
+		} else {
+			return this.state.rollsLeft + ' Rolls Left';
 		}
 	}
 
@@ -103,10 +145,8 @@ class Game extends Component {
 							<button
 								className='Game-reroll'
 								disabled={this.state.rollsLeft <= 0 && true}
-								onClick={this.roll}>
-								{this.state.rollsLeft >= 3
-									? 'Starting Round'
-									: this.state.rollsLeft + ' Rolls Left'}
+								onClick={this.state.gameOver === true ? this.restartGame : this.roll}>
+								{this.btnText()}
 							</button>
 						</div>
 					</section>
