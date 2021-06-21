@@ -67,6 +67,11 @@ class Game extends Component {
 
 	totalScore(evt) {
 		let total = 0;
+		console.log(Object.values(this.state.scores).forEach(element => {
+			if (element !== undefined) {
+				total = total + element
+			} 
+		}))
 		return <h2>Total Score: {total}</h2>;
 	}
 
