@@ -29,7 +29,6 @@ class Game extends Component {
 				yahtzee: undefined,
 				chance: undefined,
 			},
-			gameOver: false,
 		};
 		this.roll = this.roll.bind(this);
 		this.doScore = this.doScore.bind(this);
@@ -48,7 +47,6 @@ class Game extends Component {
 				isRolling: false,
 			}));
 		}, 1000);
-		
 	}
 
 	toggleLocked(idx) {
@@ -65,19 +63,16 @@ class Game extends Component {
 			rollsLeft: NUM_ROLLS,
 			locked: Array(NUM_DICE).fill(false),
 		}));
-		this.roll();
 	}
 
 	totalScore(evt) {
 		let total = 0;
-		let rulesLeft = 13;
 		Object.values(this.state.scores).forEach(element => {
 			if (element !== undefined) {
 				total = total + element;
-				rulesLeft = rulesLeft - 1;
 			}
 		});
-		
+
 		return <h2>Total Score: {total}</h2>;
 	}
 
@@ -128,6 +123,7 @@ class Game extends Component {
 	}
 
 	render() {
+		const { dice, locked, isRolling, rollsLeft, gameOver, scores } = this.state;
 		return (
 			<div className='Game'>
 				<header className='Game-header'>
@@ -135,23 +131,23 @@ class Game extends Component {
 
 					<section className='Game-dice-section'>
 						<Dice
-							dice={this.state.dice}
-							locked={this.state.locked}
+							dice={dice}
+							locked={locked}
 							handleClick={this.toggleLocked}
-							isRolling={this.state.isRolling}
-							rollsLeft={this.state.rollsLeft}
+							isRolling={isRolling}
+							rollsLeft={rollsLeft}
 						/>
 						<div className='Game-button-wrapper'>
 							<button
 								className='Game-reroll'
-								disabled={this.state.rollsLeft <= 0 && true}
-								onClick={this.state.gameOver === true ? this.restartGame : this.roll}>
+								disabled={rollsLeft <= 0 && true}
+								onClick={gameOver === true ? this.restartGame : this.roll}>
 								{this.btnText()}
 							</button>
 						</div>
 					</section>
 				</header>
-				<ScoreTable doScore={this.doScore} scores={this.state.scores} />
+				<ScoreTable doScore={this.doScore} scores={scores} />
 				{this.totalScore()}
 			</div>
 		);

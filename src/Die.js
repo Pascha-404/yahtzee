@@ -13,10 +13,10 @@ class Die extends Component {
 	displayClass(evt) {
 		const eye = ['zero', 'one', 'two', 'three', 'four', 'five', 'six'];
 		let classes = ['Die', 'fas', `fa-dice-${eye[this.props.val]}`];
-		if (this.props.locked === true) {
+		if (this.props.locked) {
 			classes.push('Die-locked');
 		}
-		if (this.props.isRolling === true && this.props.locked === false) {
+		if (this.props.isRolling && this.props.locked === false) {
 			classes.push('Die-rolling');
 		}
 		if (!this.props.val) {
@@ -27,17 +27,12 @@ class Die extends Component {
 		return classes.join(' ');
 	}
 	render() {
+		const { isRolling, rollsLeft } = this.props;
 		return (
 			<i
-				disabled={
-					this.props.isRolling === true || this.props.rollsLeft === 0 ? true : false
-				}
+				disabled={isRolling || rollsLeft === 0 ? true : false}
 				className={this.displayClass()}
-				onClick={
-					this.props.isRolling === true || this.props.rollsLeft === 0
-						? undefined
-						: this.handleClick
-				}></i>
+				onClick={isRolling || rollsLeft === 0 ? undefined : this.handleClick}></i>
 		);
 	}
 }
